@@ -576,7 +576,7 @@ a.woocommerce-review-link:hover,
 }
 
 .woocommerce .select2-container--default .select2-selection--single .select2-selection__arrow {
-  background: url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg);
+  background: url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg);
   background-size: 6px;
   background-repeat: no-repeat;
   background-position: 4px center;
@@ -965,8 +965,8 @@ p.woocommerce-result-count {
   min-width: 56px;
   padding: 8px 9px;
   margin-right: 12px;
-  background: url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg),
-    url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-up.svg), #ffffff;
+  background: url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg),
+    url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-up.svg), #ffffff;
   background-size: 6px, 6px;
   background-repeat: no-repeat, no-repeat;
   background-position: right 0.8em bottom calc(50% - 5px), right 0.8em top calc(50% - 5px);
@@ -1028,7 +1028,7 @@ p.woocommerce-result-count {
   cursor: pointer;
   width: 100%;
   position: relative;
-  background: url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg), #ffffff;
+  background: url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg), #ffffff;
   background-size: 6px;
   padding-right: 24px;
   background-repeat: no-repeat;
@@ -1204,7 +1204,7 @@ p.woocommerce-result-count {
 }
 input[type="checkbox"]:checked ~ span::before,
 input[type="checkbox"]:checked ~ label span::before {
-  background: url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/check-mark.svg), #ffffff;
+  background: url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/check-mark.svg), #ffffff;
 }
 .woocommerce-form-login
   label.woocommerce-form__label.woocommerce-form__label-for-checkbox.woocommerce-form-login__rememberme {
@@ -1545,7 +1545,7 @@ fieldset {
 .woocommerce .widget_product_categories .select2-container .select2-selection--single {
   height: auto;
   border-color: #d3ced2;
-  background: url(http://localhost:10017/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg), #ffffff;
+  background: url(http://peppys.local/wp-content/plugins/oxygen-woocommerce/elements/assets/chevron-down.svg), #ffffff;
   background-size: 6px;
   background-repeat: no-repeat;
   background-position: right 0.8em center;
@@ -1776,7 +1776,7 @@ padding-left: 20px;
 				}
 			}
 .agencyb-heading-two {
- font-family:'Oswald';
+ font-family:Oswald;
  color:#ffffff;
  font-size:56px;
  font-weight:700;
@@ -1795,7 +1795,7 @@ padding-left: 20px;
 }
 
 .small-text {
- font-family:'Source Sans Pro';
+ font-family:Source Sans Pro;
  font-size:12px;
  line-height:1.6;
  color:#95949e;
@@ -1803,7 +1803,7 @@ padding-left: 20px;
  font-weight:400;
 }
 .heading-four {
- font-family:'';
+ font-family:;
  font-size:18px;
  text-transform:uppercase;
  letter-spacing:2px;
@@ -1813,7 +1813,7 @@ padding-left: 20px;
  margin-bottom:6px;
 }
 .text-link {
- font-family:'Source Sans Pro';
+ font-family:Source Sans Pro;
  margin-bottom:24px;
  line-height:1.6;
  color:#ba3739;
@@ -1847,7 +1847,7 @@ padding-left: 20px;
 .atomic-blog-4-tags {
 }
 .atomic-subheading {
- font-family:'Oswald';
+ font-family:Oswald;
  color:#2b2c27;
  font-size:24px;
  line-height:1.6;
@@ -1906,7 +1906,7 @@ border: 1px solid #6799b2;
 color: #6799b2;
 padding: 9px 15px;
 }.atomic-outline-button {
- font-family:'Source Sans Pro';
+ font-family:Source Sans Pro;
  font-weight:700;
  border-top-style:solid;
  border-right-style:solid;
@@ -1976,7 +1976,7 @@ padding: 9px 15px;
 display:block;
 }
 .atomic-content-26-title {
- font-family:'Oswald';
+ font-family:Oswald;
  color:#05172c;
  font-size:24px;
  font-weight:500;
@@ -1992,7 +1992,7 @@ display:block;
 }
 
 .atomic-content-26-text {
- font-family:'Source Sans Pro';
+ font-family:Source Sans Pro;
  color:#3b3c38;
  font-size:18px;
  line-height:1.6;
@@ -2113,8 +2113,6 @@ gap:15px;
 .hero-btn {
 background-color :#c13f40;
 border: 1px solid #c13f40;
-color: #ffffff;
-padding: 10px 16px;
 }.hero-btn {
  padding-left:60px;
  border-radius:100px;
