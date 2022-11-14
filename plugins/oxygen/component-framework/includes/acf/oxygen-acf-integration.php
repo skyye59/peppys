@@ -154,6 +154,20 @@ class oxygen_acf_integration {
             $dynamic_data[] = $acf_custom_field;
         }
 
+        $options_for_image_id = array_reduce( $fields, array( $this, "add_image_id_button" ), array() ); 
+        
+        if( count( $options_for_image_id ) > 0 ) { 
+            $acf_image_id_field = array(
+                'name' => __( 'Advanced Custom Field', 'oxygen' ),
+                'mode' => 'image-id',
+                'position' => 'Post',
+                'data' => 'acf_image_id',
+                'handler' => array($this, 'acf_image_id_handler'),
+                'properties' => $options_for_image_id
+            );
+            $dynamic_data[] = $acf_image_id_field;
+        }
+
 		return $dynamic_data;
 	}
 
@@ -541,6 +555,31 @@ class oxygen_acf_integration {
         return $result;
     }
 
+    function add_image_id_button( $result, $option ) {
+	    $valid_url_field_types = array( 'image');
+        $is_settings_page = $this->is_settings_page_feild($option['parent']);
+
+        if ( !isset( $option['type'] ) ) {
+            return array();
+        }
+
+        if (!isset($option['multiple'])) {
+            $option['multiple'] = false;
+        }
+
+        if( !empty( $option['name'] ) && !$option['multiple'] && isset( $option[ 'type' ] ) && in_array( $option[ 'type' ], $valid_url_field_types ) ) {
+            $result[] = array(
+                'name' => $option['label'],
+                'data' => $option['name'],
+                'type' => 'button',
+                'properties' => [],
+                'settings_page' => $is_settings_page,
+            );
+        }
+        
+        return $result;
+    }
+
 	function acf_content_handler( $atts ){
 
         global $wpdb;
@@ -835,6 +874,11 @@ class oxygen_acf_integration {
                 } else {
                     // Field is configured as "Return Value" = "Image URL" in ACF
                     $url = wp_make_link_relative( $field['value'] );
+
+                    if( empty(  $url  )  ) {
+                        return "";
+                    }                    
+
                     $image_attachment = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE guid LIKE '%%%s';", $url ),ARRAY_A );
                     $image_id = $image_attachment['ID'];
                     $image_url = wp_get_attachment_image_src( $image_id, $image_size )[0] ?? null;
@@ -874,6 +918,36 @@ class oxygen_acf_integration {
 		}
 		return esc_url_raw( $output );
 	}
+
+
+    function acf_image_id_handler( $atts ){
+        global $wpdb;
+        $field = $this->get_field_by_path( $atts['settings_path'], $atts['settings_page'] );
+		$output = '';
+		if( empty( $field ) ) return $output;
+
+		switch( $field['type'] ) {
+			case 'image':
+                $image_id = null;
+                $image_attachment = null;
+
+                if( is_array( $field['value'] ) ) {
+                    // Field is configured as "Return Value" = "Image Array" in ACF
+                    $image_id = isset($field['value']['ID']) ? $field['value']['ID'] : 0;
+                } else if( is_numeric( $field['value'] ) ) {
+                    // Field is configured as "Return Value" = "Image ID" in ACF
+                    $image_id = $field['value'];
+                } else {
+                    // Field is configured as "Return Value" = "Image URL" in ACF
+                    $url = wp_make_link_relative( $field['value'] );
+                    $image_attachment = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE guid LIKE '%%%s';", $url ),ARRAY_A );
+                    $image_id = $image_attachment['ID'];
+                }
+                $output = $image_id;
+				break;
+		}
+		return $output;
+    }
 
     /**
      * Common helper to get field by settings path, issue #1642

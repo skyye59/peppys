@@ -259,7 +259,7 @@ function oxygen_vsb_register_settings() {
    add_option( 'oxygen_vsb_number_of_latest_revisions', "20" );
    register_setting( 'oxygen_vsb_options_revisions', 'oxygen_vsb_number_of_latest_revisions' );
 
-   add_option( 'oxygen_vsb_number_of_daily_revisions', "30" );
+   add_option( 'oxygen_vsb_number_of_daily_revisions', "7" );
    register_setting( 'oxygen_vsb_options_revisions', 'oxygen_vsb_number_of_daily_revisions' );
 
    add_option( 'oxygen_vsb_block_category_label', "" );

@@ -850,13 +850,9 @@ div#ct-connection-category {
 
 .oxygen-edit-mode-button-non-gutenberg.oxygen-edit-mode-button-non-gutenberg {
   display: none;
-  background: #4f88f9;
-  color: #ffffff !important;
+  margin-left: 5px !important;
 }
-.wrap .oxygen-edit-mode-button-non-gutenberg:hover {
-  background: #3176ff;
-  color: #ffffff !important;
-}
+
 .wrap .oxygen-edit-mode-button-non-gutenberg img {
   height: 1em;
 }

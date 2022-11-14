@@ -731,4 +731,14 @@ Class OxygenElementHelper {
 
 		$this->assets_path = $path;
 	}
+
+	/**
+	 * 
+	 * @author Ilya K.
+	 * @since 4.1
+	 */
+
+	public function is_ajax_controls() {
+		return $this->AJAXControls;
+	}
 }

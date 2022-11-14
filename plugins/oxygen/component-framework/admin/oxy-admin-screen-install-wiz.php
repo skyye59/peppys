@@ -8,7 +8,7 @@
 
 	if(!$defaultSet) {
 		foreach($ct_source_sites as $key => $item) {
-			if(isset($item['self']) && $item['self'] === true) {
+			if ( empty( $item['system'] ) || ! empty( $item['self'] ) ) {
 				continue;
 			}
 			$result = ct_new_api_remote_get($item['url'],'screenshot/');

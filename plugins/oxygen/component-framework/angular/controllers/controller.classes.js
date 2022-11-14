@@ -753,4 +753,58 @@ CTFrontendBuilder.controller("ControllerClasses", function($scope, $parentScope,
         
     }
 
+
+    /**
+     * Return a list of used classes for given element and all his children recursively
+     * 
+     * @since 4.1
+     * @auhor Ilya K.
+     */
+
+    $scope.getAllElementsClasses = function(component) {
+
+        var classes = [];
+
+        if (component.options && component.options.classes) {
+            classes = component.options.classes;
+        }
+
+        if (component.children) {
+            for (var key in component.children) {
+                if (Object.hasOwnProperty.call(component.children, key)) {
+                    var child = component.children[key];
+                    classes = classes.concat($scope.getAllElementsClasses(child));
+                }
+            }
+        }
+
+        return classes;
+    }
+
+    
+    /**
+     * For a given classes list generate a new list with all classes styles
+     * 
+     * @since 4.1
+     * @auhor Ilya K.
+     */
+
+    $scope.getClassesWithStyles = function(classes) {
+
+        var classesWithStyles = {};
+
+        for (var key in classes) {
+            if (Object.hasOwnProperty.call(classes, key)) {
+                var className = classes[key];
+
+                if ($scope.classes[className]) {
+                    classesWithStyles[className] = $scope.classes[className];
+                    classesWithStyles[className].key = className;
+                }
+            }
+        }
+
+        return classesWithStyles;
+    }
+
 });

@@ -19,7 +19,9 @@ Class CT_Image extends CT_Component {
 		// Increase default 1600 max width for image sizes in srcset attribute.
 		add_filter( 'max_srcset_image_width', array( $this, 'max_srcset_image_width' ) );
 		
-		add_action( 'template_redirect', array($this, 'get_attachment_sizes'));
+		add_action( 'template_redirect', 				array($this, 'get_attachment_sizes') );
+		add_action( 'wp_ajax_ct_get_attachment_sizes',  array($this, 'get_attachment_sizes') );
+
 	}
 
 

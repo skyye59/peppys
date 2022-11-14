@@ -586,7 +586,7 @@ function ct_view_meta_box_callback( $post ) {
 					<span id="ct-toggle-shortcodes"><?php _e( "Shortcodes (read only)", "oxygen" ); ?></span>
 				</p>
 				<div id="ct-builder-shortcodes" style="display:none">
-					<textarea readonly="true" class="widefat" rows="8" name="ct_builder_shortcodes" id ="ct_builder_shortcodes"><?php echo htmlentities( $custom_view ); ?></textarea>
+					<textarea readonly="true" class="widefat" rows="8" name="ct_builder_shortcodes" id ="ct_builder_shortcodes"><?php echo htmlentities( $custom_view, ENT_COMPAT, "UTF-8" ); ?></textarea>
 				</div>
 				<p>
 					<span id="ct-toggle-json"><?php _e( "JSON", "oxygen" ); ?></span>
@@ -1030,7 +1030,7 @@ function ct_view_meta_box_callback( $post ) {
 			<span id="ct-toggle-shortcodes"><?php _e( "Shortcodes (read only)", "component-theme" ); ?></span>
 		</p>
 		<div id="ct-builder-shortcodes" style="display:none">
-			<textarea readonly="true" class="widefat" rows="8" name="ct_builder_shortcodes" id="ct_builder_shortcodes"><?php echo htmlentities( $shortcodes ); ?></textarea>
+			<textarea readonly="true" class="widefat" rows="8" name="ct_builder_shortcodes" id="ct_builder_shortcodes"><?php echo htmlentities( $shortcodes, ENT_COMPAT, "UTF-8" ); ?></textarea>
 		</div>
 		<p>
 			<span id="ct-toggle-json"><?php _e( "JSON", "oxygen" ); ?></span>

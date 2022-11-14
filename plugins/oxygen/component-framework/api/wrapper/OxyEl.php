@@ -54,6 +54,13 @@ class OxyEl {
 
     function __construct() {
 
+        // don't boot the element during data loading where it is not needed 
+        if ( !isset( $_REQUEST['action'] ) || $_REQUEST['action'] != "oxy_get_components_templates" ) {
+            if ( oxy_data_requests() ) {
+                return;
+            }
+        }
+
         $name = $this->name();
         $slug = $this->name2slug($name);
 
@@ -121,7 +128,19 @@ class OxyEl {
             });
         }
 
-        $this->controls();
+        if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == "oxy_get_components_templates" ) {
+            $this->controls();
+        }
+        else if ( isset( $_REQUEST['ct_builder'] ) && !isset( $_REQUEST['oxygen_iframe'] ) ) {
+            // Toolbar frame
+            if (!$this->El->is_ajax_controls()) {
+                // some API elements don't load controls with AJAX, so add them to HTML 
+                $this->controls();
+            }
+        }
+        else {
+            $this->controls();
+        }
         $this->El->controlsReady();
 
         if( $server_side_render ) {

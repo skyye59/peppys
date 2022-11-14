@@ -846,3 +846,7 @@ span.ct-contains-oxy:empty::after {
   border: 10px #ddd solid;
   background: repeating-linear-gradient(45deg, #eee 0px, #eee 10px, #ddd 10px, #ddd 20px);
 }
+
+[data-oxy-loading-image="true"]{
+  filter: blur(10px);
+}

@@ -863,7 +863,13 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
 		        else {
 			        // global variable to hold this query so that the oxy dynamic shortcodes use it
 			        global $oxy_vsb_use_query;
+			        global $oxy_vsb_use_query_parent;
 			        $oxy_vsb_use_query = $query;
+                    
+                    // Save parent query for the first Repeater
+                    if (!$oxy_vsb_use_query_parent) {
+			            $oxy_vsb_use_query_parent = $query;
+                    }
 
                     //if the css cache is to be generated and there are no posts, we still need to run the shortcodes atleast once
                     if(isset($oxygen_vsb_css_caching_active) && $oxygen_vsb_css_caching_active === true) {
@@ -922,8 +928,20 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <?php } ?>
                     
                     <?php
-			        $oxy_vsb_user_query = false; // let the rest of the system rely on the global wp_query
-			        wp_reset_query();
+
+                    if ($oxy_vsb_use_query_parent != $oxy_vsb_use_query) {
+                        // End of the child Repeater, restore query to parent
+			            $oxy_vsb_use_query = $oxy_vsb_use_query_parent; 
+                        $GLOBALS['wp_query'] = $oxy_vsb_use_query;
+	                    wp_reset_postdata();
+                    }
+                    else {
+                        // End of the parent Repeater, restore to global
+                        $oxy_vsb_use_query_parent = false;
+                        $oxy_vsb_use_query = false;
+                        wp_reset_query();
+                    }
+			        
 		        }
 
             }
@@ -1057,6 +1075,7 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
             // post type
             if ($options['query_post_ids']) {
                 $args['post__in'] = explode(",",$options['query_post_ids']);
+                $args['post_type'] = $options['query_post_types'];
             }
             else {
                 $args['post_type'] = $options['query_post_types'];
@@ -2387,8 +2406,10 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
 
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-                    
-                        <?php $oxygen_toolbar->measure_box("paginate_border_radius", 'px,%,em'); ?>
+
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginate_border_radius", 'px,%,em'); ?>
+                        </div>
                     
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=true">
@@ -2412,7 +2433,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
                         
-                        <?php $oxygen_toolbar->measure_box("paginate_border_bottom_left_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginate_border_bottom_left_radius", 'px,%,em'); ?>
+                        </div>
 
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=false">
@@ -2809,8 +2832,10 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
 
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-                    
-                        <?php $oxygen_toolbar->measure_box("paginatelink_border_radius", 'px,%,em'); ?>
+
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelink_border_radius", 'px,%,em'); ?>
+                        </div>
                     
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=true">
@@ -2834,7 +2859,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
                         
-                        <?php $oxygen_toolbar->measure_box("paginatelink_border_bottom_left_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelink_border_bottom_left_radius", 'px,%,em'); ?>
+                        </div>
 
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=false">
@@ -2953,8 +2980,10 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
 
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-                    
-                        <?php $oxygen_toolbar->measure_box("paginatelinkactive_border_radius", 'px,%,em'); ?>
+
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkactive_border_radius", 'px,%,em'); ?>
+                        </div>
                     
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=true">
@@ -2978,7 +3007,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
                         
-                        <?php $oxygen_toolbar->measure_box("paginatelinkactive_border_bottom_left_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkactive_border_bottom_left_radius", 'px,%,em'); ?>
+                        </div>
 
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=false">
@@ -3449,8 +3480,10 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
 
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-                    
-                        <?php $oxygen_toolbar->measure_box("paginatelinkhover_border_radius", 'px,%,em'); ?>
+
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkhover_border_radius", 'px,%,em'); ?>
+                        </div>
                     
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=true">
@@ -3474,7 +3507,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
                         
-                        <?php $oxygen_toolbar->measure_box("paginatelinkhover_border_bottom_left_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkhover_border_bottom_left_radius", 'px,%,em'); ?>
+                        </div>
 
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=false">
@@ -3594,7 +3629,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
                     
-                        <?php $oxygen_toolbar->measure_box("paginatelinkactivehover_border_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkactivehover_border_radius", 'px,%,em'); ?>
+                        </div>
                     
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=true">
@@ -3618,7 +3655,9 @@ class Oxygen_VSB_Dynamic_List extends CT_Component {
                     <div class='oxygen-control-wrapper'>
                         <label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
                         
-                        <?php $oxygen_toolbar->measure_box("paginatelinkactivehover_border_bottom_left_radius", 'px,%,em'); ?>
+                        <div class="oxygen-control">
+                            <?php $oxygen_toolbar->measure_box("paginatelinkactivehover_border_bottom_left_radius", 'px,%,em'); ?>
+                        </div>
 
                         <a href='#' id='oxygen-control-borders-radius-individual'
                             ng-click="editIndividualRadii=false">

@@ -6,7 +6,7 @@ if( !class_exists( 'EDD_SL_Plugin_Updater_Oxygen' ) ) {
  
 Class OxygenMainPluginUpdater {
 
-	public $oxygen_url 	= "http://oxygenbuilder.com";
+	public $oxygen_url 	= "https://oxygenbuilder.com";
 	
 	/**
 	 * Add the actions in the constructor

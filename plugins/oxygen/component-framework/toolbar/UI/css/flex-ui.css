@@ -850,11 +850,14 @@ input.oxygen-option-default,
 	margin-right: 5px;
 	margin-bottom: 8px;
 	flex-basis: 70px;
-	position: relative;
 }
 
 .oxygen-control-wrapper .oxygen-control-wrapper {
   margin-bottom: 0px;
+}
+
+.oxygen-control-wrapper .oxygen-control-wrapper .oxy-style-indicator {
+  bottom: 0;
 }
 
 .oxygen-control-wrapper-center {
@@ -869,7 +872,7 @@ input.oxygen-option-default,
     border-left-style: solid;
     border-left-width: 2px;
     position: absolute;
-    bottom: 0px;
+    bottom: 8px;
     z-index: 11;
     height: 31px;
     border-radius: 4px 0px 0px 4px;
@@ -907,11 +910,21 @@ input.oxygen-option-default,
 .oxy-style-indicator:hover::after {
     opacity: 1;
 }
+div.oxygen-has-id-value:not(.oxygen-measure-box) ~ div.oxygen-control .oxygen-measure-box-unit-none:not(.oxygen-slider-measure-box):focus-within {
+  border-left-style: solid;
+  border-left-width: 2px;
+  border-left-color:#26A0F5;
+}
 .oxygen-has-class-value:not(.oxygen-measure-box) {
 	/* background: linear-gradient(90deg, rgba(0,150,136,1) 0%, rgba(0,150,136,1) 50%, rgba(0,0,0,0) 50%); */
   border-left-color: #009688;
 	color: #009688;
 	display: flex;
+}
+.oxygen-has-class-value:not(.oxygen-measure-box) ~ div.oxygen-control .oxygen-measure-box-unit-none:not(.oxygen-slider-measure-box):focus-within {
+  border-left-style: solid;
+  border-left-width: 2px;
+  border-left-color:#009688;
 }
 .oxygen-has-class-value:not(.oxygen-measure-box)::after {
     content: "Styled via class";
@@ -998,7 +1011,7 @@ input.oxygen-option-default,
 .oxy-style-indicator[ng-class*='border-bottom-left-radius'],
 .oxy-style-indicator[ng-class*='border-bottom-right-radius']
 {
-	bottom: 16px;
+	bottom: 24px;
 }
 .oxy-style-indicator[ng-class*='aos-enable'],
 .oxygen-checkbox-checkbox .oxy-style-indicator,
@@ -1139,6 +1152,18 @@ ul.oxygen-control-label li a {
   opacity: 1;
 }
 
+.oxygen-measure-box-unit-none:focus-within {
+  position: absolute;
+  width: calc(100% - 5px);
+  z-index: 100;
+  left: 0;
+}
+
+.oxygen-control:focus-within,
+.oxygen-control-wrapper:focus-within {
+  min-height: 31px;
+}
+
 .oxygen-measure-box .oxygen-measure-box-units {
   display: none;
   position: absolute;
@@ -1214,7 +1239,8 @@ ul.oxygen-control-label li a {
   align-items: center;
 }
 
-.oxygen-slider-measure-box .oxygen-measure-box {
+.oxygen-slider-measure-box .oxygen-measure-box,
+.oxygen-slider-measure-box .oxygen-control {
   flex-basis: 100px;
 }
 
@@ -1227,7 +1253,8 @@ ul.oxygen-control-label li a {
   flex-basis: 200px;
 }
 
-.oxygen-slider-measure-box.oxygen-measure-box-unit-none .oxygen-measure-box {
+.oxygen-slider-measure-box.oxygen-measure-box-unit-none .oxygen-measure-box,
+.oxygen-slider-measure-box.oxygen-measure-box-unit-none .oxygen-control {
   flex-basis: unset;
   width: 100%;
 }
@@ -1911,6 +1938,8 @@ ul.oxygen-control-label li a {
   grid-column-start: 1 !important;
   grid-column-end: 5 !important;
   z-index: 100;
+  width: 100% !important;
+  left: 0 !important;
 }
 
 /* New four sides measure box styles, v 4.0 RC 1, apply all trigger */
@@ -2834,6 +2863,10 @@ to accomodate it. flexbox is great */
 
 .oxygen-toolbar-panel .oxygen-control-wrapper {
   margin: 0px;
+}
+
+.oxygen-toolbar-panel .oxygen-control-wrapper .oxy-style-indicator {
+  bottom: 0;
 }
 
 .oxygen-toolbar-panel .oxygen-select-box {
@@ -4661,6 +4694,21 @@ i.ct-icon-if-conditions {
   text-align: center;
 }
 
+.oxy-product-builder-elements {
+  flex-grow: 50;
+  justify-content: flex-start;
+}
+.oxy-product-builder-elements::after {
+  content: '';
+  height: 100%;
+}
+.oxy-product-builder-elements > .oxygen-add-section-element {
+  background-color: var(--oxy-mid);
+}
+.oxy-product-builder-elements > .oxygen-add-section-element:hover {
+  background-color: var(--oxy-hover);
+}
+
 /* Show/Hide left sidebar */
 @keyframes oxygenUIElementFlashing {
   0%,
@@ -4767,15 +4815,28 @@ i.ct-icon-if-conditions {
 }
 
 /* presets dialog */
-#oxygen-presets-dialog .oxygen-close-icon {
+#oxygen-presets-dialog .oxygen-close-icon,
+#oxygen-export-dialog .oxygen-close-icon{
   float: right;
 }
-#oxygen-presets-dialog #oxygen-preset-json-container {
+#oxygen-presets-dialog #oxygen-preset-json-container,
+#oxygen-export-dialog .oxygen-json-container{ 
   user-select: text;
   overflow-y: auto;
   font-family: var(--oxy-code-font-family);
   font-size: var(--oxy-small-text-size);
   max-height: calc(100% - 140px);
+}
+#oxygen-export-dialog .oxygen-json-container{ 
+  background-color: var(--oxy-mid);
+  height: 360px;
+}
+#oxygen-export-dialog textarea{
+  min-width: 100%;
+  height: 360px;
+  background-color: var(--oxy-mid);
+  color: var(--oxy-light-text);
+  font-size: var(--oxy-small-text-size);
 }
 
 /* Empty sidebar message */

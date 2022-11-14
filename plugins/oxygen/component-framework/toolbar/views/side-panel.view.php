@@ -16,6 +16,12 @@
 			</div>
 
 			<div class="ct-elements-managers-top clearfix">
+
+				<div class="ct-elements-managers-top-item ct-button ct-butt-import"
+					ng-click="showImportModal()">
+					<img src="<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/toolbar-icons/add.svg">
+					<?php _e("Import", "component-theme"); ?>
+				</div>
 				<div class="ct-elements-managers-top-item ct-button ct-butt-expand-all"
 					ng-click="$broadcast('treeExpand')">
 					<img src="<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/toolbar-icons/expand.svg">
@@ -66,19 +72,45 @@
 							class="ct-more-options-icon" />
 					
 						<img title="Remove Component" 
-							<?php if (!oxygen_vsb_current_user_can_full_access()&&oxygen_vsb_user_has_enabled_elements()) : ?>
+							<?php if (!oxygen_vsb_current_user_can_full_access()) : ?>
 							ng-if="iframeScope.isElementEnabledForUser(item.name)"
 							<?php endif; ?>
 							ng-click="state.editable = false; state.showCategorize = false; iframeScope.removeComponentWithUndo(item.id,item.name,item.options.ct_parent)"
 							src="<?php echo CT_FW_URI;?>/toolbar/UI/oxygen-icons/structure-pane/delete.svg"  />
 					</div>
-					<div class="dom-tree-more-options" ng-if="state.showMoreOptions && !state.showCategorize">
-						<div ng-show="iframeScope.isCanComponentize(item.id, item.name)" ng-click="iframeScope.saveReusable(item.id); state.showMoreOptions = false"><span>Make Re-Usable</span></div>
-						<div class="option-copy-to-block" ng-if="item.name == 'ct_section' || item.name == 'ct_div_block'" ng-click="iframeScope.saveReusable(item.id, true); state.showMoreOptions = false"><span>Copy to Block</span></div>
-						<div ng-click="iframeScope.duplicateComponent(item.id,item.name,item.options.ct_parent); state.showMoreOptions = false"><span>Duplicate</span></div>
-						<div ng-click="iframeScope.wrapComponentWith('ct_div_block', item.id, item.options.ct_parent); state.showMoreOptions = false"><span>Wrap with &lt;div&gt;</span></div>
-						<div ng-click="state.editable=true; state.showMoreOptions = false" class="rename-trigger"><span>Rename</span></div>
-						<div class="option-categorize" ng-click="state.showCategorize = true"><span>Categorize</span></div>
+					<div class="dom-tree-more-options" 
+						ng-if="state.showMoreOptions && !state.showCategorize">
+						<div 
+							ng-show="iframeScope.isCanComponentize(item.id, item.name)" 
+							ng-click="copyElementExportJSON(item.id); state.showMoreOptions = false">
+							<span><?php _e("Export", "oxygen"); ?></span>
+						</div>
+						<div 
+							ng-show="iframeScope.isCanComponentize(item.id, item.name)" 
+							ng-click="iframeScope.saveReusable(item.id); state.showMoreOptions = false">
+							<span>Make Re-Usable</span>
+						</div>
+						<div class="option-copy-to-block" 
+							ng-if="item.name == 'ct_section' || item.name == 'ct_div_block'" 
+							ng-click="iframeScope.saveReusable(item.id, true); state.showMoreOptions = false">
+							<span>Copy to Block</span>
+						</div>
+						<div 
+							ng-click="iframeScope.duplicateComponent(item.id,item.name,item.options.ct_parent); state.showMoreOptions = false">
+							<span>Duplicate</span>
+						</div>
+						<div 
+							ng-click="iframeScope.wrapComponentWith('ct_div_block', item.id, item.options.ct_parent); state.showMoreOptions = false">
+							<span>Wrap with &lt;div&gt;</span>
+						</div>
+						<div 
+							ng-click="state.editable=true; state.showMoreOptions = false" class="rename-trigger">
+							<span>Rename</span>
+						</div>
+						<div class="option-categorize" 
+							ng-click="state.showCategorize = true">
+							<span>Categorize</span>
+						</div>
 					</div>
 					<div class="dom-tree-more-options dom-tree-categorize-options" ng-if="state.showCategorize">
 						<div ng-click="state.showCategorize = false; iframeScope.setComponentCategory(item.id, category, $event)" ng-repeat="category in categoryList()" ng-class="{'active': iframeScope.component.options[iframeScope.component.active.id]['ct_category'] === '{{category}}'}" >{{category}}</div>

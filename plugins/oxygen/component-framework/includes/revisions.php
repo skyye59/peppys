@@ -3,7 +3,7 @@ class Oxygen_Revisions {
 
     static function create_revision( $post_id ) {
         $max_recent_revisions = get_option('oxygen_vsb_number_of_latest_revisions', 20);
-        $max_daily_revisions = get_option('oxygen_vsb_number_of_daily_revisions', 30);
+        $max_daily_revisions = get_option('oxygen_vsb_number_of_daily_revisions', 7);
 
         $inserted_revision = false;
 
@@ -181,17 +181,22 @@ class Oxygen_Revisions {
                                 $revision = $revisions[$i]->meta_id;
                                 $permalink = get_permalink(); //only for non-templates
                                 $restorelink = get_edit_post_link( $post_id, '' ) . '&ct_restore_revision=' . $revisions[$i]->meta_id . '&wp_nonce=' . wp_create_nonce( 'ct_restore_revision_' . $revisions[$i]->meta_id );
+                                $deletelink = get_edit_post_link( $post_id, '' ) . '&ct_delete_revision=' . $revisions[$i]->meta_id . '&ct_delete_revision_date=' . $dates[$i]->meta_id .'&wp_nonce=' . wp_create_nonce( 'ct_delete_revision_' . $revisions[$i]->meta_id );
                                 if( $is_reusable) {
                                     $permalink = get_permalink( $post_id );
                                 }
                                 echo "<a class='oxygen-preview-revision' href='javascript:;' target='_blank' data-revision='$revision' data-permalink='$permalink' data-restorelink='$restorelink' data-parameter='$preview_parameter' data-date='$revision_date' data-template='" . ($template ? 'true' : 'false') . "'>" . __( 'Preview', 'component_theme' ) . "</a> ";
 		                        echo "<a class='oxygen-restore-revision' href='" . $restorelink . "'>" . __( 'Restore', 'component_theme' ) . "</a>";
+		                        echo " <a class='oxygen-delete-revision' href='" . $deletelink . "'>" . __( 'Delete', 'component_theme' ) . "</a>";
                             ?>
 
                         <?php endif; ?>
                     </li>
                 <?php endfor; ?>
             </ul>
+            <?php 
+            $delete_all_link = get_edit_post_link( $post_id, '' ) . '&ct_delete_all_revisions=' . $post_id .'&wp_nonce=' . wp_create_nonce( 'ct_delete_all_revisions' );
+            echo "<a id='oxygen-delete-all-revisions' href='" . $delete_all_link . "'>" . __( 'Delete All Post Revisions', 'component_theme' ) . "</a>"; ?>
         </div>
 <?php
     }
@@ -206,6 +211,28 @@ class Oxygen_Revisions {
             }
         }
     }
+
+    static function delete_revision_hook() {
+        if( isset( $_REQUEST['action'] ) && isset( $_GET['post'] ) && isset( $_GET['ct_delete_revision'] ) && isset( $_GET['ct_delete_revision_date'] )  && isset( $_GET['wp_nonce'] ) ) {
+
+            if( wp_verify_nonce( $_GET['wp_nonce'], 'ct_delete_revision_' . $_GET['ct_delete_revision'] ) ) {
+                delete_metadata_by_mid( 'post', $_GET['ct_delete_revision'] );
+                delete_metadata_by_mid( 'post', $_GET['ct_delete_revision_date'] );
+            }
+        }
+    } 
+    
+    
+    static function delete_all_revisions_hook() {
+        if( isset( $_REQUEST['action'] ) && isset( $_GET['post'] ) && isset( $_GET['ct_delete_all_revisions'] ) && isset( $_GET['wp_nonce'] ) ) {
+
+            if( wp_verify_nonce( $_GET['wp_nonce'], 'ct_delete_all_revisions' ) ) {
+                $post_id = $_GET['ct_delete_all_revisions'];
+                delete_post_meta( $post_id, "ct_builder_shortcodes_revisions" );
+                delete_post_meta( $post_id, "ct_builder_shortcodes_revisions_dates" );
+            }
+        }
+    } 
 
     /**
      * Alternative to get_post_meta(), to retrieve meta_ids. @see get_meta_db()
@@ -250,6 +277,7 @@ class Oxygen_Revisions {
 	        $where[] = $wpdb->prepare( 'meta_id = %s', maybe_serialize(wp_unslash($mid)));
         if( !empty($where) )
             $query .= ' WHERE '.implode(' AND ', $where );
+            $query .= ' ORDER BY meta_id';
         if( $single )
             $query .= ' LIMIT 1';
 
@@ -300,5 +328,7 @@ class Oxygen_Revisions {
 }
 
 add_action( "admin_init", "Oxygen_Revisions::restore_revision_hook" );
+add_action( "admin_init", "Oxygen_Revisions::delete_revision_hook" );
+add_action( "admin_init", "Oxygen_Revisions::delete_all_revisions_hook" );
 add_action( "wp", "Oxygen_Revisions::detect_reusable_preview" );
 

@@ -1294,8 +1294,10 @@ Class CT_Component {
 								ng-class="{'oxygen-has-class-value':iframeScope.classHasOption('<?php echo $prefix."border-radius"; ?>')&&!IDHasOption('<?php echo $prefix."border-radius"; ?>'),'oxygen-has-id-value':iframeScope.IDHasOption('<?php echo $prefix."border-radius"; ?>')}">
 							</div>
 							<label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-						
-							<?php $oxygen_toolbar->measure_box($prefix."border-radius", 'px,%,em'); ?>
+
+							<div class="oxygen-control">
+								<?php $oxygen_toolbar->measure_box($prefix."border-radius", 'px,%,em'); ?>
+							</div>
 						
 							<a href='#' id='oxygen-control-borders-radius-individual'
 								ng-click="editIndividualRadii=true">
@@ -1322,7 +1324,9 @@ Class CT_Component {
 							</div>
 							<label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
 							
-							<?php $oxygen_toolbar->measure_box($prefix."border-bottom-left-radius", 'px,%,em'); ?>
+							<div class="oxygen-control">
+								<?php $oxygen_toolbar->measure_box($prefix."border-bottom-left-radius", 'px,%,em'); ?>
+							</div>
 
 							<a href='#' id='oxygen-control-borders-radius-individual'
 								ng-click="editIndividualRadii=false">
@@ -1366,7 +1370,7 @@ Class CT_Component {
 						<?php endif; ?>
 					<?php endif; ?>
 
-					<?php echo (isset($param['heading'])) ? "<label class='oxygen-control-label'>".sanitize_text_field($param['heading'])."</label>" : ""; ?>
+					<?php echo (isset($param['heading']) && !( oxygen_vsb_get_user_edit_mode() == "edit_only" && $param['type'] == 'tag' )) ? "<label class='oxygen-control-label'>".sanitize_text_field($param['heading'])."</label>" : ""; ?>
 
 					<?php if (isset($param['description'])) : ?>
 					<div class="oxygen-control-description">
@@ -1469,6 +1473,9 @@ Class CT_Component {
 								<?php break;
 
 							case 'tag' : 
+
+								if ( oxygen_vsb_get_user_edit_mode() == "edit_only" )
+									break;
 							
 								if ( isset($options['shortcode']) && $options['shortcode'] ) {
 									$shortcode_arg = ", true";
@@ -2547,8 +2554,15 @@ Class CT_Component {
 			 */
 
 			if ( $this->options['tag'] == "oxy_nav_menu" ) {
+				
+				// support for tabs navigation styling
+				$oxy_nav_menu_selector_item	= "";
+				if ( $key == "hover" ){
+					$oxy_nav_menu_selector_item	= "$hashSelector .menu-item:focus-within a,\r\n";
+				}
+				
 				$oxy_nav_menu_selector 			= ( $key != 'original') ? "$hashSelector .oxy-nav-menu-list:$key{\r\n" : "$hashSelector .oxy-nav-menu-list{\r\n";
-				$oxy_nav_menu_selector_item		= ( $key != 'original') ? "$hashSelector .menu-item:$key a{\r\n" : "$hashSelector .menu-item a{\r\n";
+				$oxy_nav_menu_selector_item	   .= ( $key != 'original') ? "$hashSelector .menu-item:$key a{\r\n" : "$hashSelector .menu-item a{\r\n";
 				$oxy_nav_menu_selector_active 	= ( $key != 'original') ? "$hashSelector .current-menu-item a:$key{\r\n" : "$hashSelector .current-menu-item a{\r\n";
 				$oxy_nav_menu_selector_dropdowns 		= ( $key != 'original') ? "$hashSelector.oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu:$key{\r\n" : "$hashSelector.oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu{\r\n";
 				$oxy_nav_menu_selector_dropdowns_items 	= ( $key != 'original') ? "$hashSelector.oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu .menu-item a:$key{\r\n" : "$hashSelector.oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu .menu-item a{\r\n";

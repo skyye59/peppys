@@ -264,6 +264,7 @@
   color: rgba(255, 255, 255, 0.5);
   text-transform: none;
   font-size: var(--oxy-small-text-size);
+  display: flex;
 }
 .ct-elements-managers-top-item.ct-button:hover {
   color: rgba(255, 255, 255, 0.8);
@@ -271,6 +272,12 @@
 
 .ct-elements-managers-top-item.ct-button img {
   opacity: 0.5;
+  width: 12px;
+  margin-right: 4px;
+}
+
+.ct-elements-managers-top-item.ct-butt-import {
+  margin-right: auto;
 }
 
 .ct-elements-managers-bottom {

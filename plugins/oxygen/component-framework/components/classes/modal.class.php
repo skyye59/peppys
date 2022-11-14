@@ -320,6 +320,7 @@ jQuery( document ).ready( function() {
                         var $modal = jQuery( modal );
 						
 						var exitIntentFunction = function( e ){
+                            if( e.target.tagName == 'SELECT' ) { return; }
 							if( e.clientY <= 0 ) {
 								showModal( modal );
 								document.removeEventListener( "mouseleave", exitIntentFunction );

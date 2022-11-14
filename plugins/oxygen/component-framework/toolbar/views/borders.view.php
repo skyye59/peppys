@@ -96,8 +96,10 @@
 			ng-class="{'oxygen-has-class-value':iframeScope.classHasOption('border-radius')&&!IDHasOption('border-radius'),'oxygen-has-id-value':iframeScope.IDHasOption('border-radius')}">
 		</div>
 		<label class='oxygen-control-label'><?php _e("Border Radius","oxygen"); ?></label>
-	
-		<?php $this->measure_box("border-radius", 'px,%,em'); ?>
+
+		<div class="oxygen-control">
+			<?php $this->measure_box("border-radius", 'px,%,em'); ?>
+		</div>
 	
 		<a href='#' id='oxygen-control-borders-radius-individual'
 			ng-click="editIndividualRadii=true">
@@ -124,7 +126,9 @@
 		</div>
 		<label class='oxygen-control-label'><?php _e("Bottom Left","oxygen"); ?></label>
 		
-		<?php $this->measure_box("border-bottom-left-radius", 'px,%,em'); ?>
+		<div class="oxygen-control">
+			<?php $this->measure_box("border-bottom-left-radius", 'px,%,em'); ?>
+		</div>
 
 		<a href='#' id='oxygen-control-borders-radius-individual'
 			ng-click="editIndividualRadii=false">

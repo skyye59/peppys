@@ -5,11 +5,11 @@ Plugin Name: Oxygen
 Author: Soflyy
 Author URI: https://oxygenbuilder.com
 Description: If you can do it with WordPress, you can design it with Oxygen.
-Version: 4.0.4
+Version: 4.1.1
 Text Domain: oxygen
 */
 
-define("CT_VERSION", 	"4.0.4");
+define("CT_VERSION", 	"4.1.1");
 define("CT_FW_PATH", 	plugin_dir_path( __FILE__ )  . 	"component-framework" );
 define("CT_FW_URI", 	plugin_dir_url( __FILE__ )  . 	"component-framework" );
 define("CT_PLUGIN_MAIN_FILE", __FILE__ );	

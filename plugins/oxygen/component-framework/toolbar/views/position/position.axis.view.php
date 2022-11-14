@@ -106,8 +106,10 @@
 	</div>
 
 </div>
+<?php if ( oxygen_vsb_get_user_edit_mode() != "edit_only" ) { ?>
 <div class='oxygen-control-row'>
 	<?php $oxygen_toolbar->measure_box_with_wrapper("gap", __("Gap"), 'px,%,em'); ?>
 </div>
+<?php } ?>
 <!-- .oxygen-control-rows-multiple-inset -->
 </div>

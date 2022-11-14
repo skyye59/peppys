@@ -541,4 +541,20 @@ jQuery(document).ready(function($) {
 		} );
 	}
 
+	$(".oxygen-delete-revision").click(function(e){
+
+		if (!confirm("Are sure to delete revision?")) {
+			e.preventDefault();
+		}
+		
+	})
+
+	$("#oxygen-delete-all-revisions").click(function(e){
+
+		if (!confirm("Are sure to delete ALL posts revisions?")) {
+			e.preventDefault();
+		}
+		
+	})
+
 });

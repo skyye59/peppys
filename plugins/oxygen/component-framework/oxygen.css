@@ -280,6 +280,7 @@ div.ct-fancy-icon {
   border-color: transparent;
 }
 .oxy-nav-menu .oxy-nav-menu-list li.current-menu-item > a,
+.oxy-nav-menu .oxy-nav-menu-list li.menu-item:focus-within > a,
 .oxy-nav-menu .oxy-nav-menu-list li.menu-item:hover > a {
   border-color: currentColor;
 }
@@ -304,7 +305,8 @@ div.ct-fancy-icon {
   left: 100%;
   top: 0;
 }
-.oxy-nav-menu .menu-item:hover > .sub-menu {
+.oxy-nav-menu .menu-item:hover > .sub-menu,
+.oxy-nav-menu .menu-item:focus-within > .sub-menu {
   visibility: visible;
   opacity: 1;
 }

@@ -1100,7 +1100,25 @@ function ct_get_components_tree_json() {
     	$tree['outerTemplateData']['template_name'] = get_the_title($template_id);
     }
 
-	$json = json_encode($tree);
+	$components_defaults = apply_filters( "ct_component_default_params", array() );
+	$all_defaults = call_user_func_array('array_merge', array_values($components_defaults));
+	$components_defaults["all"] = $all_defaults;
+
+	foreach ($components_defaults as $component_name => $component_defaults) {
+		$components_defaults[$component_name] = array_filter($component_defaults, function($item) {
+			if ( empty($item) && !is_iterable($item) ) {
+				return false;
+			}
+			return true;
+		});
+	}
+
+	$json = json_encode(
+		array(
+			"defaultOptions" => $components_defaults,
+			"tree" => $tree
+		)
+	);
 
 	// echo response
   	header('Content-Type: text/html');
@@ -1795,7 +1813,7 @@ function ct_new_api_remote_get($source, $path = '') {
 		$args['headers']['auth'] = $accessKey;
 	}
 
-	$result = wp_remote_request($source.'/wp-json/oxygen-vsb-connection/v1/'.$path, $args);
+	$result = wp_remote_request($source.'?rest_route=/oxygen-vsb-connection/v1/'.$path, $args);
 
 	$status = wp_remote_retrieve_response_code($result);
 	
@@ -2141,7 +2159,7 @@ function ct_get_page_from_source() {
 
 		if(isset($component['children'])) {
 			
-			$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source))."'");
+			$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source), array())."'");
 			$source_info = array();
 
 			if (is_array($data) && !empty($data)) {
@@ -2231,7 +2249,7 @@ function ct_get_component_from_source() {
 	if(isset($component['children'])) {
 
 		global $wpdb;
-		$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source))."'");
+		$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source), array())."'");
 		$source_info = array();
 
 		if (is_array($data) && !empty($data)) {

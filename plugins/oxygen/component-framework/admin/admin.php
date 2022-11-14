@@ -141,10 +141,8 @@ function ct_shortcodes_save_meta_box( $post_id ) {
 	}
     
     // Lock Post In Edit Mode
-	if( !isset( $_POST['oxygen_lock_post_edit_mode'] ) ) {
-        $_POST['oxygen_lock_post_edit_mode'] = "";
-    }
-    update_post_meta( $post_id, 'oxygen_lock_post_edit_mode', $_POST['oxygen_lock_post_edit_mode'] );
+    $oxygen_lock_post_edit_mode = isset($_POST['oxygen_lock_post_edit_mode']) ? $_POST['oxygen_lock_post_edit_mode'] : "";
+    update_post_meta( $post_id, 'oxygen_lock_post_edit_mode', $oxygen_lock_post_edit_mode );    
 }
 add_action( 'save_post', 'ct_shortcodes_save_meta_box' );
 

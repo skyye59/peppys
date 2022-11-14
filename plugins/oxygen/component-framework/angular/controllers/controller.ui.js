@@ -1501,16 +1501,27 @@ CTFrontendBuilderUI.controller("ControllerUI", function($controller, $anchorScro
                     $scope.iframeScope.setOptionModel('ct_content', content, $scope.iframeScope.component.active.id, $scope.iframeScope.component.active.name);
 
                 }
+
+                // update active parent
+                $scope.iframeScope.findParentComponentItem($scope.iframeScope.componentsTree, $scope.iframeScope.component.active.id, $scope.iframeScope.updateCurrentActiveParent);
+
+                var idToRebuild = $scope.iframeScope.component.active.id,
+                    parent = $scope.iframeScope.getComponentById($scope.iframeScope.component.active.parent.id),
+                    isParentContentEditable = (parent) ? parent[0].attributes['contenteditable'] : false;
+
+                if (isParentContentEditable) {
+                    idToRebuild = $scope.iframeScope.component.active.parent.id;
+                }
                 
                 if($scope.iframeScope.dynamicListTextChanged) {
                   if(oxyDynamicList.length > 0 && !$scope.iframeScope.component.options[parseInt(oxyDynamicList.attr('ng-attr-component-id'))]['model']['listrendertype']) {
                     $scope.iframeScope.updateRepeaterQuery(parseInt(oxyDynamicList.attr('ng-attr-component-id')));
                   } else {
-                    $scope.iframeScope.rebuildDOM($scope.iframeScope.component.active.id);
+                    $scope.iframeScope.rebuildDOM(idToRebuild);
                   }
                 }
                 else {
-                  $scope.iframeScope.rebuildDOM($scope.iframeScope.component.active.id);
+                  $scope.iframeScope.rebuildDOM(idToRebuild);
                 }
 
             } else {
@@ -4663,6 +4674,70 @@ CTFrontendBuilderUI.controller("ControllerUI", function($controller, $anchorScro
             var wrap = $scope.iframeScope.globalCodeMirrorWrap === 'true';
             $scope.globalCodeMirror.setOption('lineWrapping', wrap);
         }
+    }
+
+
+    /**
+     * Element Export/Import UI functions.
+     *
+     * @since 4.1
+     */
+
+    $scope.showExportModal = function(id) {
+        
+        var component               = $scope.iframeScope.findComponentItem($scope.iframeScope.componentsTree.children, id, $scope.iframeScope.getComponentItem);
+        var allClasses              = $scope.iframeScope.getAllElementsClasses(component);
+        var allClassesWithStyles    = $scope.iframeScope.getClassesWithStyles(allClasses);
+
+        var exportObj = {
+            "component": component,
+            "classes": allClassesWithStyles,
+        }
+        
+        var json = JSON.stringify(exportObj);
+        
+        json = $scope.iframeScope.replaceGlobalColors(json);
+
+        // remove Angular internal variable to prevent "dupes" error when import
+        json = json.replace(new RegExp(/,"\$\$hashKey":"object:\d*"/, 'g'), "");
+
+        $scope.elementExportJSON = json;
+        $scope.showExportDialog = true;
+    }
+
+    $scope.copyElementExportJSON = function(id) {
+
+        var component               = $scope.iframeScope.findComponentItem($scope.iframeScope.componentsTree.children, id, $scope.iframeScope.getComponentItem);
+        var allClasses              = $scope.iframeScope.getAllElementsClasses(component);
+        var allClassesWithStyles    = $scope.iframeScope.getClassesWithStyles(allClasses);
+
+        var exportObj = {
+            "component": component,
+            "classes": allClassesWithStyles,
+        }
+        
+        var json = JSON.stringify(exportObj);
+        
+        json = $scope.iframeScope.replaceGlobalColors(json);
+
+        // remove Angular internal variable to prevent "dupes" error when import
+        json = json.replace(new RegExp(/,"\$\$hashKey":"object:\d*"/, 'g'), "");
+
+        $scope.elementExportJSON = json;
+
+        $scope.iframeScope.copyToClipboard($scope.elementExportJSON);
+
+        $scope.iframeScope.showNoticeModal("<div>Element JSON copied to clipboard</div>", "ct-notice");
+    }
+
+    $scope.showImportModal = function() {
+        $scope.showImportDialog = true;
+    }
+
+    $scope.processElementImportJSON = function() {
+        $scope.iframeScope.addComponentFromSource($scope.elementImportJSON);
+        $scope.showImportDialog = false;
+        $scope.elementImportJSON = "";
     }
 
     /**

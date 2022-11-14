@@ -45,7 +45,7 @@ function globalShortcutHandler(event) {
     var key = event.key.toLowerCase();
     var keyCode = event.keyCode;
 
-    if( event.ctrlKey || event.metaKey ) {
+    if( (event.ctrlKey || event.metaKey) && !event.shiftKey ) {
         switch (key) {
             case 's':
                 $parentScope.triggerCodeMirrorBlur();
@@ -76,6 +76,17 @@ function globalShortcutHandler(event) {
                 iframeScope.redo();
                 break;
         } 
+    } else if( (event.ctrlKey || event.metaKey) && event.shiftKey ) {
+        switch (key) {
+            case 'c':
+                $parentScope.copyElementExportJSON($parentScope.iframeScope.component.active.id);
+                processed = true;
+                break;
+            case 'i':
+                $parentScope.showImportModal();
+                processed = true;
+                break;
+        } 
     }
 
     // If the shortcut event was processed, stop the event propagation and cancel it
@@ -97,7 +108,8 @@ function cancelDefaults(event) {
         'c',
         'v',
         'z',
-        'y'
+        'y',
+        'i'
     ]
 
     if( !keyboardShortcuts.includes(event.key.toLowerCase()) ) {

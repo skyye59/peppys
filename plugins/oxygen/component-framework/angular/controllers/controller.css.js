@@ -3444,7 +3444,7 @@ CTFrontendBuilder.controller("ControllerCSS", function($scope, $parentScope, $ht
 									}
 									if (value && $scope.excludeProperties.indexOf(parameter) < 0 && parameter !== "background-layers") {
 
-										if ($scope.notCSSOptions[componentOptions.name]===undefined||$scope.notCSSOptions[componentOptions.name].indexOf(parameter) < 0){
+										if ($scope.notCSSOptions[componentOptions.name]===undefined||$scope.notCSSOptions[componentOptions.name].indexOf(parameter.replace(/-/g, '_')) < 0){
 											style += parameter + ":" + value + ";";
 										}
 										
@@ -5567,7 +5567,7 @@ CTFrontendBuilder.controller("ControllerCSS", function($scope, $parentScope, $ht
 				var className = classes[key];
 
 				for (stateKey in $scope.classes[className]) {
-					if (stateKey=='media') {
+					if (stateKey=='media'||stateKey=='parent') {
 						continue;
 					}
 					var stateOptions = $scope.classes[className][stateKey];
@@ -5687,7 +5687,7 @@ CTFrontendBuilder.controller("ControllerCSS", function($scope, $parentScope, $ht
 				}
 
 				for (stateKey in $scope.classes[className]) {
-					if (stateKey=='media') {
+					if (stateKey=='media'||stateKey=='parent') {
 						continue;
 					}
 					var stateOptions = $scope.classes[className][stateKey];

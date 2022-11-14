@@ -181,6 +181,9 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
             }
         }
     }
+
+    $scope.defaultOptions = [];
+    $scope.defaultOptions.all = [];
     
 
     $scope.addDynamicContent = function(holder, content) {
@@ -1596,6 +1599,10 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
                             $scope.parseImageShortcode(item.id);
                         }, 0);
                     }
+
+                    if ($scope.updateAttachmentSizes) {
+                        $scope.processImageSizes(item.id);
+                    }
                 }
 
                 if (item.name == "oxy_map") {
@@ -1667,6 +1674,9 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
 
                         if (!parentComponent) {
                             console.log("ID "+item.id+" element is not present on the page");
+                            if (counter < 300) {
+                                buildOxygenTreeChildTimeout(counter);
+                            }
                             return;
                         };
 
@@ -2740,6 +2750,11 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
         
         if (id===undefined) {
             id = $scope.component.active.id;
+        }
+
+        if ($scope.updateAttachmentSizes) {
+            $scope.component.options[id].sizes = false;
+            $scope.component.options[id].sizes_requested = false;
         }
 
         if (
@@ -4566,6 +4581,8 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
         $scope.component.options[parentId]["model"]["ct_content"]       = parent.html();
         $scope.component.options[parentId]["original"]["ct_content"]    = parent.html();
         $scope.setOption(parentId, parentName, "ct_content");
+
+        $scope.component.id++;
 
         $scope.rebuildDOM(parentId);
 

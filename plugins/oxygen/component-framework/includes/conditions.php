@@ -1053,7 +1053,7 @@ Class OxygenConditions {
 	}
 
 
-	public function do_shortcode($matches) {
+	public static function do_shortcode($matches) {
 		
 		return "'".do_shortcode($matches[0])."'";
 	}
@@ -1061,7 +1061,7 @@ Class OxygenConditions {
 	static function eval_condition($conditions) {
 
 		$result = true;
-		$logic = preg_replace_callback('/\[oxygen ([^\]]*)\]([^\"\[\s]*)/i', array($this, 'do_shortcode'), $conditions);
+		$logic = preg_replace_callback('/\[oxygen ([^\]]*)\]([^\"\[\s]*)/i', array( __CLASS__ , 'do_shortcode'), $conditions);
 
 		$logic = str_replace('\n', ' ', $logic);
 

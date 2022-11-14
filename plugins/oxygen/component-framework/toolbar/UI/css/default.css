@@ -5421,11 +5421,10 @@ table.ct-settings td:first-child {
   font-weight: normal;
   line-height: var(--oxy-small-line-height);
   -webkit-font-smoothing: antialiased;
-  background: #ffffff;
   border-radius: 50%;
-  color: #ff6868;
+  color: white;
   position: absolute;
-  top: 6px;
+  top: 3px;
   right: 6px;
   width: 15px;
   height: 15px;
@@ -6036,7 +6035,7 @@ span.oxygen-data-dialog-close {
 
 div.oxygen-data-dialog {
   position: fixed;
-  z-index: 9;
+  z-index: 2147483645;
   color: #f4f4f4;
   font-family: var(--oxy-ui-font-family);
   -webkit-font-smoothing: antialiased;
@@ -6046,7 +6045,7 @@ div.oxygen-data-dialog {
   border-radius: var(--oxy-border-radius);
 }
 div.oxygen-data-dialog-bg {
-  z-index: 8;
+  z-index: 2147483644;
   position: fixed;
   top: 0;
   left: 0;

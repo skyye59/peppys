@@ -64,3 +64,43 @@
     </div>
 </div>
 <!-- /Presets Dialog Window -->
+
+
+<!-- Import/Export Dialog Window -->
+<div class="oxygen-data-dialog-bg"
+    ng-show="showImportDialog||showExportDialog"
+    ng-click="showImportDialog=false;showExportDialog=false;elementExportJSON='';elementImportJSON=''">
+</div>
+<div id="oxygen-export-dialog" class="oxygen-data-dialog"
+    ng-show="showImportDialog||showExportDialog">
+    
+    <h1>
+        <span ng-show="showExportDialog">
+            <?php _e("Export Element JSON","oxygen"); ?>
+        </span>
+        <span ng-show="showImportDialog">
+            <?php _e("Import Element JSON","oxygen"); ?>
+        </span>
+        <svg class="oxygen-close-icon"
+            ng-click="showImportDialog=false;showExportDialog=false;elementExportJSON='';elementImportJSON=''"><use xlink:href="#oxy-icon-cross"></use>
+        </svg>
+    </h1>
+
+    <div ng-show="showExportDialog">
+        <div class="oxygen-json-container">{{elementExportJSON}}</div>
+        <div class="oxygen-apply-button"
+            ng-click="copyElementExportJSON()">
+            <?php _e("Copy To Clipboard","oxygen"); ?>
+        </div>
+    </div>
+
+    <div ng-show="showImportDialog">
+        <textarea 
+            ng-model="elementImportJSON"></textarea>
+        <div class="oxygen-apply-button"
+            ng-click="processElementImportJSON()">
+            <?php _e("Import","oxygen"); ?>
+        </div>
+    </div>
+</div>
+<!-- /Import/Export Dialog Window -->

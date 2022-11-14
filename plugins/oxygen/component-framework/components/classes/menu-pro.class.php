@@ -351,7 +351,7 @@ class OxyProMenu extends OxyEl {
          */ 
 
         $hover_n_active_section = $desktop_section->addControlSection("hover_n_active", __("Hover & Active"), "assets/icon.png", $this);
-        $hover_selector  = ".oxy-pro-menu-list .menu-item.menu-item.menu-item.menu-item a:hover";
+        $hover_selector  = ".oxy-pro-menu-list .menu-item.menu-item.menu-item.menu-item a:hover, .oxy-pro-menu-list .menu-item.menu-item.menu-item.menu-item a:focus-within";
         $active_selector = ".oxy-pro-menu-list .menu-item.current-menu-item.current-menu-item a";
         
         $hover_n_active_section->addStyleControls(
@@ -362,21 +362,28 @@ class OxyProMenu extends OxyEl {
                     "name" => __('Hover Text Color'),
                     "selector" => $hover_selector,
                     "property" => 'color',
+                    // for backward compatibility
+                    "slug" => "oxy-pro-menu_slug_oxypromenulistmenuitemmenuitemmenuitemmenuitemahover_color",
                 ),
                 array(
                     "name" => __('Hover Background Color'),
                     "selector" => $hover_selector,
                     "property" => 'background-color',
+                    // for backward compatibility
+                    "slug" => "oxy-pro-menu_slug_oxypromenulistmenuitemmenuitemmenuitemmenuitemahover_background_color",
                 ),
                 array(
                     "name" => __('Hover Border Top'),
                     "selector" => $hover_selector.",.oxy-pro-menu-list .menu-item a",
                     "property" => 'border-top-width',
+                    // for backward compatibility
+                    "slug" => "oxy-pro-menu_slug_oxypromenulistmenuitemmenuitemmenuitemmenuitemahoveroxypromenulistmenuitema_border_top_width",
                 ),
                 array(
                     "name" => __('Hover Border Bottom'),
                     "selector" => $hover_selector.",.oxy-pro-menu-list .menu-item a",
                     "property" => 'border-bottom-width',
+                    "slug" => "oxy-pro-menu_slug_oxypromenulistmenuitemmenuitemmenuitemmenuitemahoveroxypromenulistmenuitema_border_bottom_width",
                 ),
 
                 // Active
@@ -618,9 +625,11 @@ class OxyProMenu extends OxyEl {
                 ),
                 array(
                     "name" => __('Hover Background Color'),
-                    "selector" => $selector.":hover",
+                    "selector" => $selector.":hover,".$selector.":focus-within",
                     "property" => 'background-color',
                     "condition" => 'show_dropdown=true',
+                    // for backward compatibility
+                    "slug" => "oxy-pro-menu_slug_oxypromenucontainernotoxypromenuopencontainernotoxypromenuoffcanvascontainersubmenumenuitemahover_background_color",
                 ),
 
                 // Link
@@ -632,9 +641,11 @@ class OxyProMenu extends OxyEl {
                 ),
                 array(
                     "name" => __('Hover Text Color'),
-                    "selector" => $selector.":hover",
+                    "selector" => $selector.":hover,".$selector.":focus-within",
                     "property" => 'color',
                     "condition" => 'show_dropdown=true',
+                    // for backward compatibility
+                    "slug" => "oxy-pro-menu_slug_oxypromenucontainernotoxypromenuopencontainernotoxypromenuoffcanvascontainersubmenumenuitemahover_color",
                 ),
             )
         );
@@ -1566,6 +1577,7 @@ class OxyProMenu extends OxyEl {
             border-color: transparent;
         }
         .oxy-pro-menu-list .menu-item.current-menu-item a,
+        .oxy-pro-menu-list .menu-item.menu-item.menu-item.menu-item a:focus-within,
         .oxy-pro-menu-list .menu-item.menu-item.menu-item.menu-item a:hover {
             border-color: currentColor;
         }
@@ -1609,9 +1621,21 @@ class OxyProMenu extends OxyEl {
 
             jQuery(document).ready(oxygen_init_pro_menu);
             document.addEventListener('oxygen-ajax-element-loaded', oxygen_init_pro_menu, false);
-                
+            
+            let proMenuMouseDown = false;
+
             jQuery(".oxygen-body")
-            .on('mouseenter', '.oxy-pro-menu-show-dropdown:not(.oxy-pro-menu-open-container) .menu-item-has-children', function() {
+            .on("mousedown", '.oxy-pro-menu-show-dropdown:not(.oxy-pro-menu-open-container) .menu-item-has-children', function(e) {
+                proMenuMouseDown = true;
+            })
+
+            .on("mouseup", '.oxy-pro-menu-show-dropdown:not(.oxy-pro-menu-open-container) .menu-item-has-children', function(e) {
+                proMenuMouseDown = false;
+            })
+
+            .on('mouseenter focusin', '.oxy-pro-menu-show-dropdown:not(.oxy-pro-menu-open-container) .menu-item-has-children', function(e) {
+                if( proMenuMouseDown ) return;
+                
                 var subMenu = jQuery(this).children('.sub-menu');
                 subMenu.addClass('aos-animate oxy-pro-menu-dropdown-animating').removeClass('sub-menu-left');
 
@@ -1628,11 +1652,11 @@ class OxyProMenu extends OxyEl {
                     }
             })
             
-            .on('mouseleave', '.oxy-pro-menu-show-dropdown .menu-item-has-children', function() {
+            .on('mouseleave focusout', '.oxy-pro-menu-show-dropdown .menu-item-has-children', function() {
                 jQuery(this).children('.sub-menu').removeClass('aos-animate');
 
                 var subMenu = jQuery(this).children('.sub-menu');
-                subMenu.addClass('oxy-pro-menu-dropdown-animating-out');
+                //subMenu.addClass('oxy-pro-menu-dropdown-animating-out');
 
                 var duration = jQuery(this).parents('.oxy-pro-menu-container').data('oxy-pro-menu-dropdown-animation-duration');
                 setTimeout(function() {subMenu.removeClass('oxy-pro-menu-dropdown-animating-out')}, duration*1000);

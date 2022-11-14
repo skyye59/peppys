@@ -51,7 +51,7 @@ function do_oxygen_elements($node) {
 		if ($children && $content) {
 			foreach ($children as $grand_child) {
 				$parced_grand_child = do_oxygen_elements(array($grand_child));
-				$placeholder_id = ($grand_child['id']>=100000) ? $grand_child['id']-100000 : $grand_child['id'];
+				$placeholder_id = ($grand_child['id']>=100000) ? $grand_child['id'] % 100000 : $grand_child['id'];
 				$content = str_replace("<span id=\"ct-placeholder-{$placeholder_id}\"></span>", $parced_grand_child, $content);
 			}
 		}

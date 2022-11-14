@@ -57,7 +57,7 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
             "transition" : ['transition-duration','transition-duration-unit','transition-timing-function','transition-delay','transition-delay-unit','transition-property',],
             "box-shadow" : ['box-shadow-inset','box-shadow-color','box-shadow-horizontal-offset','box-shadow-vertical-offset','box-shadow-blur','box-shadow-spread'],
             "text-shadow" : ['text-shadow-color','text-shadow-horizontal-offset','text-shadow-vertical-offset','text-shadow-blur'],
-            "css-filter" : ['filter','filter-amount-blur','filter-amount-brightness','filter-amount-contrast','filter-amount-grayscale','filter-amount-hue-rotate','filter-amount-invert','filter-amount-saturate','filter-amount-sepia'],
+            "css-filter" : ['filter'],
             "animation-on-scroll" : ["aos-enable","aos-type","aos-easing","aos-duration",'aos-offset','aos-delay','aos-anchor','aos-anchor-placement','aos-once',],
         },
 
@@ -2109,11 +2109,6 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
                         }
                     }
 
-                    // skip options with no units
-                    if ( undefined == $scope.defaultOptions[componentName][name+'-unit'] ) {
-                        continue;
-                    }
-
                     if (name == 'container-padding-top'||
                         name == 'container-padding-bottom'||
                         name == 'container-padding-left'||
@@ -2123,14 +2118,20 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
                             options[name] += unit;
                         }
                     }
-                    else 
-                    if (options[name+'-unit'] == 'auto') {
-                        options[name] = 'auto';
-                    }
                     else {
-                        var unit = ( options[name+'-unit'] ) ? options[name+'-unit'] : $scope.defaultOptions[componentName][name+'-unit'];
-                        if ( options[name] ) {
-                            options[name] += unit;
+                        // skip options with no units
+                        if ( undefined == $scope.defaultOptions[componentName][name+'-unit'] ) {
+                            continue;
+                        }
+
+                        if (options[name+'-unit'] == 'auto') {
+                            options[name] = 'auto';
+                        }
+                        else {
+                            var unit = ( options[name+'-unit'] ) ? options[name+'-unit'] : $scope.defaultOptions[componentName][name+'-unit'];
+                            if ( options[name] ) {
+                                options[name] += unit;
+                            }
                         }
                     }
 
@@ -2884,6 +2885,11 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
             return false;
         }
 
+        // skip empty strings
+        if (optionValue === '') {
+            return true;
+        }
+
         // skip empty objects
         if (Array.isArray(optionValue) && optionValue.length === 0 ) {
             return true;
@@ -3002,8 +3008,8 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
                             for (var index in subtub) { 
                                 var optionName = subtub[index];
                                 if ($scope.isInherited($scope.component.active.id, optionName)===false) {
-                                    
-                                    if($scope.getOption(optionName, $scope.component.active.id) != '') {
+                                    var optionValue = $scope.getOption(optionName, $scope.component.active.id);
+                                    if ( optionValue != '' && optionValue != 'false' ) {
                                         return true;
                                     }
                                     
@@ -3025,7 +3031,8 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
                         var optionName = subtub[index];
                         if ($scope.isInherited($scope.component.active.id, optionName)===false) {
 
-                            if($scope.getOption(optionName, $scope.component.active.id) != '') {
+                            var optionValue = $scope.getOption(optionName, $scope.component.active.id);
+                            if ( optionValue != '' && optionValue != 'false' ) {
                                 return true;
                             }
                         }
@@ -3039,11 +3046,13 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
                 return false;
                     
             var subtub = $scope.optionsHierarchy[key][childKey];
+
             for (var index in subtub) { 
                 var optionName = subtub[index];
                 if ($scope.isInherited($scope.component.active.id, optionName)===false) {
 
-                    if($scope.getOption(optionName, $scope.component.active.id) != '') {
+                    var optionValue = $scope.getOption(optionName, $scope.component.active.id);
+                    if ( optionValue != '' && optionValue != 'false' ) {
                         return true;
                     }
                 }
@@ -3597,16 +3606,26 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
      * @author Ilya K.
      */
 
-    $scope.unsetOptions = function(options) {
+    $scope.unsetOptions = function(options, id) {
+
+        var name = $scope.component.active.name;
+        if (undefined===id) {
+            id = $scope.component.active.id;
+        }
+        else {
+            // if rebuilding specific id use "all" defaults as fallback
+            name = "all";
+        }
 
         for(var key in options) {
             var option = options[key],
-                defaultValue = $scope.defaultOptions[$scope.component.active.name][option];
+                defaultValue = $scope.defaultOptions[name] ? $scope.defaultOptions[name][option] : "";
+            
+            $scope.setOptionModel(option, null, id);
 
-            $scope.setOptionModel(option, null);
-            $scope.component.options[$scope.component.active.id]['id'][option]       = null;
-            $scope.component.options[$scope.component.active.id]['model'][option]    = defaultValue;
-            $scope.component.options[$scope.component.active.id]['original'][option] = defaultValue;
+            $scope.component.options[id]['id'][option]       = null;
+            $scope.component.options[id]['model'][option]    = defaultValue;
+            $scope.component.options[id]['original'][option] = defaultValue;
         }
     }
 
@@ -4010,15 +4029,27 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
 
 
     /**
-     * Show modal with current preset converted to JSON
+     * Copy current preset to clipboard
      *
      * @since 3.2
      * @author Ilya K.
      */
 
     $scope.copyPresetExportJSON = function() {
+        $scope.copyToClipboard($scope.presetExportJSON);
+    }
+
+
+    /**
+     * Copy passed conntent to a clipboard
+     *
+     * @since 3.2
+     * @author Ilya K.
+     */
+
+    $scope.copyToClipboard = function(content) {
         var el = document.createElement('textarea');
-        el.value = $scope.presetExportJSON;
+        el.value = content;
         el.setAttribute('readonly', '');
         el.style.position = 'absolute';
         el.style.left = '-9999px';

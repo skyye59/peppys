@@ -109,9 +109,13 @@ CTFrontendBuilder.controller("ControllerTemplates", function($scope, $parentScop
 
 		// rebuild DOM
 		// TODO: rebuild only code blocks??
+		$scope.updateAttachmentSizes = true;
 		$scope.rebuildDOM(0);
+		$scope.classesCached = false;
 		$scope.outputCSSOptions();
-		
+		$scope.waitOxygenTree(function(){
+			$scope.updateAttachmentSizes = false;
+		})
 	}
 
 
@@ -677,7 +681,7 @@ CTFrontendBuilder.controller("ControllerTemplates", function($scope, $parentScop
 
 			// all the classes are supposed to go under a folder that is named after the url of the source site.
 			// if a folder with this name does not exists, create one
-			if(!$scope.styleFolders.hasOwnProperty(designSet)) {
+			if(designSet && !$scope.styleFolders.hasOwnProperty(designSet)) {
 				$scope.styleFolders[designSet] = { status: 1, key: designSet};
 			}
 

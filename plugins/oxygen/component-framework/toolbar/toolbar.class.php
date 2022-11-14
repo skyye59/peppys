@@ -244,7 +244,9 @@ Class CT_Toolbar {
 			ng-if="!iframeScope.isEditing('custom-selector')">
 
 			<div class='oxygen-active-element-name'
+				<?php if (oxygen_vsb_current_user_can_full_access()) { ?>
 				ng-dblclick="iframeScope.setEditableFriendlyName(iframeScope.component.active.id, $event)"
+				<?php } ?>
 				ng-hide="iframeScope.editableFriendlyNamePropertiesPane==iframeScope.component.active.id">
 				<div ng-bind="iframeScope.component.options[iframeScope.component.active.id]['nicename']"></div>
 			</div>
@@ -898,7 +900,8 @@ Class CT_Toolbar {
 					<label class="oxygen-control-label"><?php _e("Font Size","oxygen"); ?></label>
 					<div class="oxygen-control">
 						
-						<div class="oxygen-measure-box">
+						<div class="oxygen-measure-box" 
+							ng-class="{'oxygen-measure-box-unit-none':iframeScope.getGlobalOptionUnit('global', 'headings.<?php echo $heading; ?>.font-size')==' '}">
 							<input type="text" spellcheck="false" 
 								ng-model="$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size']" 
 								ng-model-options="{ debounce: 10 }">
@@ -2658,7 +2661,9 @@ Class CT_Toolbar {
 
 		<div class="oxygen-slider-measure-box"
 			ng-class="{'oxygen-measure-box-unit-auto':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='auto','oxygen-measure-box-unit-none':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')==' '<?php echo esc_attr($default_class); ?>}">
-			<?php self::measure_box($option, $units, false, $default); ?>
+			<div class="oxygen-control">
+				<?php self::measure_box($option, $units, false, $default); ?>
+			</div>
 			<div class="oxygen-measure-box-slider">
 				<input type="range" 
 					oxy-range-fix

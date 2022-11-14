@@ -1,13 +1,7 @@
 <?php
 
-require_once("admin/cpt-templates.php");
-require_once("admin/admin.php");
 require_once("includes/ajax.php");
-require_once("admin/pages.php");
-require_once("admin/svg-icons.php");
-require_once("admin/import-export.php");
-require_once("admin/updater/edd-updater.php");
-require_once("admin/updater/edd-updater-composite-elements.php");
+
 require_once("admin/client-control.php");
 
 require_once("includes/tree-shortcodes.php");
@@ -85,98 +79,139 @@ $media_queries_list_above = array (
 	),
 );
 
-// Include Signature Class
-require_once("signature.class.php");
+require_once("api/elements-api.php");
 
-// Include Component Class
+function oxy_data_requests() {
+
+	if ( !wp_doing_ajax() ) {
+		return false;
+	}
+
+	if (isset($_REQUEST['oxygen_iframe']) && $_REQUEST['oxygen_iframe'] == 'true') {
+		return true;
+	}
+
+	$data_actions = array(
+		"oxy_get_components_templates",
+		"oxy_load_elements_presets",
+		"set_oxygen_edit_post_lock_transient",
+		"oxy_get_google_fonts",
+		"ct_get_svg_icon_sets",
+	);
+
+	if ( isset( $_REQUEST['action'] ) && in_array( $_REQUEST['action'], $data_actions) ) {
+		return true;
+	}
+
+	if ( isset( $_REQUEST['call_type'] ) && $_REQUEST['call_type'] == "get_items_from_source" ) {
+		return true;
+	}
+
+	return false;
+}
+
 require_once("components/component.class.php");
 
-// Include CSS Util
-require_once("components/css-util.class.php");
+// Instantanate elements with presets to make 'oxygen_vsb_element_presets_defaults' filter to work on AJAX
+if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == "oxy_load_elements_presets" ) {
+	include_once("components/classes/comments-list.class.php");
+	include_once("components/classes/easy-posts.class.php");
+	include_once("components/classes/menu-pro.class.php");
+}
 
-// Add components in certain order
-include_once("components/classes/section.class.php");
-include_once("components/classes/div-block.class.php");
-include_once("components/classes/new-columns.class.php");
-include_once("components/classes/headline.class.php");
-include_once("components/classes/text-block.class.php");
-include_once("components/classes/rich-text.class.php");
-include_once("components/classes/link-text.class.php");
-include_once("components/classes/link-wrapper.class.php");
-include_once("components/classes/link-button.class.php");
-include_once("components/classes/image.class.php");
-include_once("components/classes/video.class.php");
-include_once("components/classes/svg-icon.class.php");
-include_once("components/classes/fancy-icon.class.php");
-include_once("components/classes/code-block.class.php");
-include_once("components/classes/inner-content.class.php");
-include_once("components/classes/slide.class.php");
-include_once("components/classes/menu.class.php");
-include_once("components/classes/shortcode.class.php");
-include_once("components/classes/nestable-shortcode.class.php");
-include_once("components/classes/comments-list.class.php");
-include_once("components/classes/comment-form.class.php");
-include_once("components/classes/login-form.class.php");
-include_once("components/classes/search-form.class.php");
-include_once("components/classes/tabs-contents.class.php");
-include_once("components/classes/tab.class.php");
-include_once("components/classes/tab-content.class.php");
-include_once("components/classes/toolset-view.class.php");
+if ( isset( $_REQUEST['name'] ) && $_REQUEST['name'] == "composite-elements" ) {
+	require_once("admin/updater/edd-updater-composite-elements.php");
+}
 
-// Helpers
-include_once("components/classes/header.class.php");
-include_once("components/classes/header-row.class.php");
-include_once("components/classes/header-row-center.class.php");
-include_once("components/classes/header-row-left.class.php");
-include_once("components/classes/header-row-right.class.php");
-include_once("components/classes/social-icons.class.php");
-include_once("components/classes/testimonial.class.php");
-include_once("components/classes/icon-box.class.php");
-include_once("components/classes/pricing-box.class.php");
-include_once("components/classes/progress-bar.class.php");
+require_once("admin/updater/edd-updater.php");
+require_once("admin/updater/edd-updater-composite-elements.php");
 
-include_once("components/classes/easy-posts.class.php");
+if ( !oxy_data_requests() ) {
 
-include_once("components/classes/gallery.class.php");
+	require_once("admin/cpt-templates.php");
+	require_once("admin/admin.php");
+	require_once("admin/pages.php");
+	require_once("admin/svg-icons.php");
+	require_once("admin/import-export.php");
 
-include_once("components/classes/slider.class.php");
-include_once("components/classes/tabs.class.php");
-include_once("components/classes/superbox.class.php");
-include_once("components/classes/toggle.class.php");
+	require_once("signature.class.php");
+	require_once("components/css-util.class.php");
 
-include_once("components/classes/map.class.php");
-include_once("components/classes/soundcloud.class.php");
-include_once("components/classes/modal.class.php");
+	// Add components in certain order
+	include_once("components/classes/section.class.php");
+	include_once("components/classes/div-block.class.php");
+	include_once("components/classes/new-columns.class.php");
+	include_once("components/classes/headline.class.php");
+	include_once("components/classes/text-block.class.php");
+	include_once("components/classes/rich-text.class.php");
+	include_once("components/classes/link-text.class.php");
+	include_once("components/classes/link-wrapper.class.php");
+	include_once("components/classes/link-button.class.php");
+	include_once("components/classes/image.class.php");
+	include_once("components/classes/video.class.php");
+	include_once("components/classes/svg-icon.class.php");
+	include_once("components/classes/fancy-icon.class.php");
+	include_once("components/classes/code-block.class.php");
+	include_once("components/classes/inner-content.class.php");
+	include_once("components/classes/slide.class.php");
+	include_once("components/classes/menu.class.php");
+	include_once("components/classes/shortcode.class.php");
+	include_once("components/classes/nestable-shortcode.class.php");
+	include_once("components/classes/comments-list.class.php");
+	include_once("components/classes/comment-form.class.php");
+	include_once("components/classes/login-form.class.php");
+	include_once("components/classes/search-form.class.php");
+	include_once("components/classes/tabs-contents.class.php");
+	include_once("components/classes/tab.class.php");
+	include_once("components/classes/tab-content.class.php");
+	include_once("components/classes/toolset-view.class.php");
 
-// not shown in fundamentals
-include_once("components/classes/reusable.class.php");
-include_once("components/classes/selector.class.php");
-include_once("components/classes/span.class.php");
-include_once("components/classes/widget.class.php");
-//include_once("components/classes/data.comment-form.class.php");
-include_once("components/classes/sidebar.class.php");
+	// Helpers
+	include_once("components/classes/header.class.php");
+	include_once("components/classes/header-row.class.php");
+	include_once("components/classes/header-row-center.class.php");
+	include_once("components/classes/header-row-left.class.php");
+	include_once("components/classes/header-row-right.class.php");
+	include_once("components/classes/social-icons.class.php");
+	include_once("components/classes/testimonial.class.php");
+	include_once("components/classes/icon-box.class.php");
+	include_once("components/classes/pricing-box.class.php");
+	include_once("components/classes/progress-bar.class.php");
 
-include_once("includes/oxygen-dynamic-shortcodes.php");
-include_once("includes/oxygen-bloat-eliminator.php");
+	include_once("components/classes/easy-posts.class.php");
 
-//include_once("includes/gutenberg/oxygen-blocks.php");
+	include_once("components/classes/gallery.class.php");
 
-include_once("components/classes/dynamic-list.class.php");
-// add_action('plugins_loaded', 'oxygen_vsb_load_dynamic_lists', 11); // this should be loaded after any elements API based plugins are loaded
+	include_once("components/classes/slider.class.php");
+	include_once("components/classes/tabs.class.php");
+	include_once("components/classes/superbox.class.php");
+	include_once("components/classes/toggle.class.php");
 
-/** 
- * Even though Li element being removed in 2.0
- * we keep it for some kind of backwrad compatibilty
- * IMPORTANT! This should be the VERY LAST component added!
- */
-include_once("components/classes/li.class.php");
+	include_once("components/classes/map.class.php");
+	include_once("components/classes/soundcloud.class.php");
+	include_once("components/classes/modal.class.php");
 
-// function oxygen_vsb_load_dynamic_lists() {
-// 	include_once("components/classes/dynamic-list.class.php");
-// }
+	// not shown in fundamentals
+	include_once("components/classes/reusable.class.php");
+	include_once("components/classes/selector.class.php");
+	include_once("components/classes/span.class.php");
+	include_once("components/classes/widget.class.php");
+	include_once("components/classes/sidebar.class.php");
 
-// Elements API
-require_once("api/elements-api.php");
+	include_once("includes/oxygen-dynamic-shortcodes.php");
+	include_once("includes/oxygen-bloat-eliminator.php");
+
+
+	include_once("components/classes/dynamic-list.class.php");
+
+	/** 
+	 * Even though Li element being removed in 2.0
+	 * we keep it for some kind of backwrad compatibilty
+	 * IMPORTANT! This should be the VERY LAST component added!
+	 */
+	include_once("components/classes/li.class.php");
+	
+}
 
 // New API Elements since 3.0+
 include_once("components/classes/menu-pro.class.php");
@@ -1267,7 +1302,6 @@ function ct_init() {
 
 	// check if builder activated
     if ( defined("SHOW_CT_BUILDER") ) {
-    	add_action("ct_builder_ng_init", "ct_init_default_options");
     	add_action("ct_builder_ng_init", "ct_init_default_values");
     	add_action("ct_builder_ng_init", "ct_init_not_css_options");
     	add_action("ct_builder_ng_init", "ct_init_options_white_list");
@@ -1736,28 +1770,6 @@ function ct_get_base() {
 add_action("wp", "ct_get_base");
 
 
-
-/**
- * Output all Components (shortcodes) default params to ng-init directive
- *
- * @since 0.1
- */
-
-function ct_init_default_options() {
-
-	$components = apply_filters( "ct_component_default_params", array() );
-
-	$all_defaults = call_user_func_array('array_merge', array_values($components));
-
-	$components["all"] = $all_defaults;
-
-	$output = json_encode($components);
-	$output = htmlspecialchars( $output, ENT_QUOTES );
-
-	echo "defaultOptions = $output;";
-}
-
-
 /**
  *
  * 
@@ -1773,6 +1785,18 @@ function ct_init_default_values() {
 	$output = htmlspecialchars( $output, ENT_QUOTES );
 
 	echo "defaultValues = $output;";
+
+	$components_defaults = apply_filters( "ct_component_default_params", array() );
+
+	$components = array_map( function($value) {
+		return [];
+	}, $components_defaults);
+	$components["all"] = [];
+
+	$output = json_encode($components);
+	$output = htmlspecialchars( $output, ENT_QUOTES );
+
+	echo "defaultOptions=$output;";
 }
 
 
@@ -3074,7 +3098,7 @@ function ct_generate_class_states_css( $class, $state, $options, $is_media = fal
 		if ( $buttonStyle == 1 && isset($buttonColor)) {
 			$css .= "background-color :" . $buttonColor . ";\r\n";
 			$css .= "border: 1px solid " .  $buttonColor . ";\r\n";
-			if($buttonTextColor) {
+			if(isset($options['button-text-color'])) {
 				$css .= "color: " . $buttonTextColor . ";\r\n";
 			}
 		}
@@ -3087,7 +3111,7 @@ function ct_generate_class_states_css( $class, $state, $options, $is_media = fal
 			}
 		}
 
-		if ( isset($buttonSize) ) {
+		if ( isset($options['button-size']) || isset($options['button-style']) ) {
 			$substracted = $buttonStyle == 2 ? 1 : 0;
 			$css .= "padding: " . (intval($buttonSize)-$substracted) . 'px ' . (intval($buttonSize)*1.6-$substracted) . "px;\r\n";
 		}
@@ -3116,14 +3140,14 @@ function ct_generate_class_states_css( $class, $state, $options, $is_media = fal
 
 			if ( $name == "font-family") {
 
-				if ( $value[0] == 'global' ) {
+				if ( is_array($value) && $value[0] == 'global' ) {
 						$settings 	= get_option("ct_global_settings");
 						$value 		= isset($settings['fonts'][$value[1]]) ? $settings['fonts'][$value[1]]: '';
 					}
 
 				//$font_families_list[] = $value;
 
-				if ( strpos($value, ",") === false && strtolower($value) != "inherit") {
+				else if ( strpos($value, ",") === false && strtolower($value) != "inherit") {
 					$value = "'$value'";
 				}
 			}

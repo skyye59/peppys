@@ -312,7 +312,8 @@ CTFrontendBuilder.controller("ControllerAJAX", function($scope, $parentScope, $h
         .then(function(response) {
             try {
                 var response = JSON.parse(response.data);
-                callback(response, postId, hasSection, componentId);
+                $scope.defaultOptions = response.defaultOptions;
+                callback(response.tree, postId, hasSection, componentId);
                 if (response['notRegisteredShortcodes']) {
                     var notRegisteredShortcodes = Object.values(response['notRegisteredShortcodes']);
                     $scope.showErrorModal(0, 'Shortcodes present in design but not registered in WordPress: <br/>'+notRegisteredShortcodes.join(', ')+'. <br/><br/>Saving now will result in this design breaking. Please re-activate the plugins that supply the shortcodes listed above before saving this design.');
@@ -1529,6 +1530,11 @@ CTFrontendBuilder.controller("ControllerAJAX", function($scope, $parentScope, $h
 
         var repeaterOptions = $scope.getRepeaterOptions(id)
 
+        var imageElement = $scope.getComponentById(id);
+        if ( imageElement ) { 
+            imageElement.attr('data-oxy-loading-image', "true");
+        }
+
         // Send AJAX request
         $http({
             url : $scope.getAJAXRequestURL(),
@@ -1543,6 +1549,7 @@ CTFrontendBuilder.controller("ControllerAJAX", function($scope, $parentScope, $h
                     data = JSON.parse(data);
                     if (data.error) {
                         var name = $scope.component.options[id]['nicename'] || "ID: "+id;
+                        $scope.unsetOptions(['attachment_height','attachment_width','attachment_url'], id);
                         $scope.showErrorModal(0, data.error + " " + name);
                     }
                     else {
@@ -1550,8 +1557,12 @@ CTFrontendBuilder.controller("ControllerAJAX", function($scope, $parentScope, $h
                     }
                 }
                 catch (err) {
+                    $scope.unsetOptions(['attachment_height','attachment_width','attachment_url'], id);
                     console.log(data);console.log(err);
                     $scope.showErrorModal(0, 'Error occurred while loading attachment sizes');
+                }
+                if ( imageElement ) { 
+                    imageElement.attr('data-oxy-loading-image', "false");
                 }
             })
             .catch(function(response) {

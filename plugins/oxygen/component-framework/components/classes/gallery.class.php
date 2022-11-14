@@ -277,7 +277,7 @@ class Oxygen_VSB_Gallery extends CT_Component {
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background-color: <?php echo $this->param_array['caption_background_color']; ?>; /* caption background color */
+                background-color: <?php echo oxygen_vsb_get_global_color_value($this->param_array['caption_background_color']); ?>; /* caption background color */
                 padding: 1em;
                 color: <?php echo oxygen_vsb_get_global_color_value($this->param_array['caption_color']); ?>;  /* caption text color */
                 font-weight: bold;

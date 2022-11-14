@@ -1699,10 +1699,18 @@ Class OXY_VSB_Connection {
 		$id = intval($params['id']);
 		$page = intval($params['page']);
 		
-		$shortcodes = get_post_meta($page, 'ct_builder_shortcodes', true);
+		$json = get_post_meta( $page, "ct_builder_json", true );
 
-		$shortcodes = parse_shortcodes($shortcodes, false);
-
+		if ($json) {
+			$json = json_decode( $json, true );
+			$tree = array();
+			$tree['content'] = $json['children'];
+		}
+		else {
+			$shortcodes = get_post_meta($page, 'ct_builder_shortcodes', true);
+			$tree = parse_shortcodes($shortcodes, false);
+		}
+		
 		$globalColors = get_option('oxygen_vsb_global_colors', array());
 
 		if(intval($id) === 0) {
@@ -1711,14 +1719,14 @@ Class OXY_VSB_Connection {
 				'name' => 'ct_div_block',
 				'id' => 0,
 				'options' => array('nicename' => $post->post_title),
-				'children' => $shortcodes['content'],
+				'children' => $tree['content'],
 			);
 
 			return $this->oxygen_vsb_process_component($item, $supportsVariableColors, $globalColors);
 		}
 		else {
 
-			foreach($shortcodes['content'] as $key => $item) {
+			foreach($tree['content'] as $key => $item) {
 				
 				if($item['id'] == $id) {
 
@@ -1865,29 +1873,37 @@ Class OXY_VSB_Connection {
 
 		$page = intval($params['id']);
 		
-		$shortcodes = get_post_meta($page, 'ct_builder_shortcodes', true);
+		$json = get_post_meta( $page, "ct_builder_json", true );
 
-		$shortcodes = parse_shortcodes($shortcodes, false);
+		if ($json) {
+			$json = json_decode( $json, true );
+			$tree = array();
+			$tree['content'] = $json['children'];
+		}
+		else {
+			$shortcodes = get_post_meta($page, 'ct_builder_shortcodes', true);
+			$tree = parse_shortcodes($shortcodes, false);
+		}
 
 		$globalColors = get_option('oxygen_vsb_global_colors', array());
 
-		foreach($shortcodes['content'] as $key => $item) {
+		foreach($tree['content'] as $key => $item) {
 
 			// recursively go through the component and replace any re-usable with the corresponding content
-			if(isset($shortcodes['content'][$key]['children'])) {
-				$shortcodes['content'][$key]['children'] = $this->oxygen_vsb_recursively_replace_reusable($item['children']);
+			if(isset($tree['content'][$key]['children'])) {
+				$tree['content'][$key]['children'] = $this->oxygen_vsb_recursively_replace_reusable($item['children']);
 			}
 
 		}
 
-		$appliedClasses = $this->oxygen_vsb_connection_applied_classes($shortcodes);
+		$appliedClasses = $this->oxygen_vsb_connection_applied_classes($tree);
 
 		$appliedGlobalColors = array();
 
 		if($supportsVariableColors) { // if client supports variable colors
-			$appliedGlobalColors = $this->oxygen_vsb_connection_extract_global_colors($shortcodes, $globalColors);
+			$appliedGlobalColors = $this->oxygen_vsb_connection_extract_global_colors($tree, $globalColors);
 		} else if(function_exists('oxygen_vsb_get_global_color_value')) { // if contains variable colors, but client does not support
-			$shortcodes = $this->oxygen_vsb_connection_replace_global_colors($shortcodes);
+			$tree = $this->oxygen_vsb_connection_replace_global_colors($tree);
 		}
 
 		$allClasses = get_option( "ct_components_classes" );
@@ -1901,9 +1917,11 @@ Class OXY_VSB_Connection {
 			$appliedClasses = $this->oxygen_vsb_connection_replace_global_colors($appliedClasses);
 		}
 
-		$result =  array('components' => $shortcodes['content'],
+		$result =  array(
+			'components' => $tree['content'],
 			'classes' => $appliedClasses,
-			'colors' => $appliedGlobalColors);
+			'colors' => $appliedGlobalColors)
+		;
 
 
 		$oxygen_vsb_color_lookup_table = get_option('oxygen_vsb_color_lookup_table', false);
@@ -1976,7 +1994,19 @@ Class OXY_VSB_Connection {
 
 			$screenshots = get_post_meta($page->ID, 'oxygen_vsb_components_screenshots', true);
 			
-			$shortcodes = get_post_meta($page->ID, 'ct_builder_shortcodes', true);
+			$json = get_post_meta( $page->ID, "ct_builder_json", true );
+
+			if ($json) {
+				$json = json_decode( $json, true );
+				$tree = array();
+				$tree['content'] = $json['children'];
+				// to keep some old logic to work
+				$shortcodes = "shortcodes";
+			}
+			else {
+				$shortcodes = get_post_meta($page->ID, 'ct_builder_shortcodes', true);
+				$tree = parse_shortcodes($shortcodes, false);
+			}
 
 			if( 
 				$getPages
@@ -2025,11 +2055,10 @@ Class OXY_VSB_Connection {
 				continue;
 			}
 
-			$shortcodes = parse_shortcodes($shortcodes, false);
 
-			if(is_array($shortcodes['content']) && sizeof($shortcodes['content']) > 0) {
+			if(is_array($tree['content']) && sizeof($tree['content']) > 0) {
 
-				if($page->post_type == 'oxy_user_library' && sizeof($shortcodes['content']) > 1) {
+				if($page->post_type == 'oxy_user_library' && sizeof($tree['content']) > 1) {
 					$newItem = array(
 						'name' => 'ct_div_block',
 						'id' => 0,
@@ -2041,7 +2070,7 @@ Class OXY_VSB_Connection {
 
 				} else {
 
-					foreach($shortcodes['content'] as $key => $item) {
+					foreach($tree['content'] as $key => $item) {
 						if($item['name'] == 'ct_section' || $item['name'] == 'oxy_header' || $item['name'] == 'ct_div_block') {
 							$comp = $this->oxygen_vsb_get_component_ready($key, $item, $page, $screenshots, $ct_preview_url);
 							if($comp)
